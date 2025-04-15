@@ -96,6 +96,7 @@ static dmem_block_t _search_free_block_for_alloc(dmem_block_t start)
 static void* _alloc(unsigned int size)
 {
     dmem_block_t pos = NULL;
+    int free_size = 0;
 
     if(size == 0)
         return NULL;
@@ -108,8 +109,6 @@ static void* _alloc(unsigned int size)
     pos = dmem_free_block();
     for( ; pos != dmem_tail_block(); pos = dmem_block_next(pos))
     {
-        int free = 0;
-
         if(!dmem_block_is_unused(pos))
             continue;
         if(dmem_block_mem_size(pos) < size)
@@ -120,8 +119,8 @@ static void* _alloc(unsigned int size)
          * 如果无法创建新的内存块，则将剩余的空闲内存全部分配，
          * 避免出现无法被管理的内存碎片
          */
-        free = dmem_block_mem_size(pos) - size;
-        if(free < (dmem_min_alloc_size() + dmem_block_size()))
+        free_size = dmem_block_mem_size(pos) - size;
+        if(free_size < (dmem_min_alloc_size() + dmem_block_size()))
         {
 
         }
@@ -301,7 +300,15 @@ void* dmem_realloc(void* old_mem, unsigned int new_size)
         /** 尝试分配新的内存 **/
         p = _alloc(new_size);
         if(p)
-            _free(old_mem);
+        {
+            /** 如果分到了新的内存，则需要将旧的内存的数据转存到新分配的内存中 **/
+            if(p != old_mem)
+            {
+                memcpy(p, old_mem, dmem_block_mem_size(block));
+                _free(old_mem);
+            }
+        }
+            
     }
     dmem_rel_lock();
 
