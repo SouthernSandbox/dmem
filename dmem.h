@@ -18,6 +18,9 @@
  *                                                  4. 为 _free() 和 dmem_free() 添加了返回值
  *                                                  5. 增加对各个函数对输入参数合法性的检查
  *                                                  6. 其他不影响算法的修改
+ * @date 2025.04.16     @version 1.2        @note   1. 修复了 dmem_realloc() 重新分配内存时不转存旧内存数据的问题
+ *                                                  2. 修改了部分注释的表达
+ *                                                  3. 修改了 _alloc() 的的一个变量名称和声明位置，使其更符合 C89 标准
  */
 #ifndef DMEM_H
 #define DMEM_H
@@ -33,14 +36,14 @@ extern "C" {
  * @brief 版本
  */
 #define DMEM_MAIN_VER       1
-#define DMEM_SUB_VER        1
-#define DMEM_UPDATE_STR     "2024.05.18"
+#define DMEM_SUB_VER        2
+#define DMEM_UPDATE_STR     "2025.04.16"
 
 /**
  * @brief bool 定义
  */
 #ifndef bool
-    #define bool _Bool
+    #define bool char
 #endif
 #ifndef false
     #define false (0)
@@ -54,8 +57,8 @@ extern "C" {
  */
 struct dmem_use_report
 {
-    unsigned int free;              /** 当前空闲内存大小 **/
-    unsigned int max_usage;         /** 该函数记录当前内存池总的内存消耗） **/
+    unsigned int free;              /** 当前空闲内存的总大小（即便空闲的内存块不连续） **/
+    unsigned int max_usage;         /** 内存的最大消耗量 **/
     unsigned int initf;             /** 初始化时空闲内存的大小 **/
     unsigned int used_count;        /** 当前尚未释放的内存块数量 **/
 };
