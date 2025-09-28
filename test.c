@@ -693,3 +693,9 @@ void example_test(void)
 
     printf("\n===== 所有测试通过! =====\n");
 }
+
+int main(void)
+{
+    example_test();
+    return 0;
+}
