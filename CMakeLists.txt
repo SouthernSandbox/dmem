@@ -1,3 +1,15 @@
+# CMakeLists.txt 开头添加（必须在 project() 之前！）
+# 1. 强制指定 C/C++ 编译器为 Clang（替换为你的实际路径）
+# set(CMAKE_C_COMPILER "gcc.exe" CACHE FILEPATH "C compiler" FORCE)
+# set(CMAKE_CXX_COMPILER "g++.exe" CACHE FILEPATH "C++ compiler" FORCE)
+
+# 2. 强制指定 Make 工具路径
+# set(CMAKE_MAKE_PROGRAM "make.exe" CACHE FILEPATH "Make program" FORCE)
+
+# 3. 禁用编译器自动检测（防止 CMake 绕开你的设置去查 GCC）
+# set(CMAKE_C_COMPILER_WORKS ON CACHE BOOL "" FORCE)
+# set(CMAKE_CXX_COMPILER_WORKS ON CACHE BOOL "" FORCE)
+
 # 后续的其他配置（如 C 标准、源文件、输出目录等）
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
